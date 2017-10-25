@@ -1,4 +1,4 @@
-package demoJavaRobot;
+package realm;
 
 public class Main {
 	
@@ -6,6 +6,7 @@ public class Main {
 		Program prog = new Program();
 		prog.startRobot();
 		prog.startROTMG();
+		prog.setMapCoordinates();
 		prog.getIntoRealm();
 	}
 	

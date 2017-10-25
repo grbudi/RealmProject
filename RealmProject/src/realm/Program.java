@@ -1,4 +1,4 @@
-package demoJavaRobot;
+package realm;
 
 import java.awt.AWTException;
 import java.awt.Rectangle;
@@ -17,27 +17,6 @@ public class Program {
 	public Rectangle rect;
 	
 	/**
-	 * Used to type a string on keyboard
-	 * @param robot
-	 * @param word
-	 */
-	public void sendKeys(Robot robot, String word) {
-	    for (char c : word.toCharArray()) {
-	        int keyCode = KeyEvent.getExtendedKeyCodeForChar(c);
-	        if (KeyEvent.CHAR_UNDEFINED == keyCode) {
-	            throw new RuntimeException(
-	                "Key code not found for character '" + c + "'");
-	        }
-	        robot.keyPress(keyCode);
-	        robot.delay(100);
-	        robot.keyRelease(keyCode);
-	        robot.delay(100);
-	    }
-	    robot.keyPress(KeyEvent.VK_ENTER);
-	    robot.keyRelease(KeyEvent.VK_ENTER);
-	}
-	
-	/**
 	 * Starting Robot
 	 */
 	public void startRobot() {
@@ -48,7 +27,7 @@ public class Program {
 		}
 	}
 	
-	/** Testing blue color of portal **/
+	// Used to find color of portals 
 	public void getColor() {
 		Rectangle captureSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
 	    BufferedImage bufferedImage = robot.createScreenCapture(captureSize);
@@ -63,23 +42,27 @@ public class Program {
 	}
 	
 	/**
-	 * Start ROTMG app
+	 * Start ROTMG application
 	 */
 	public void startROTMG() {
 		robot.mouseMove(1300, 11);
 		Shortcuts.leftClick(robot);
 		robot.delay(1000);
-		this.sendKeys(robot, "terminal");
+		Shortcuts.sendKeys(robot, "terminal");
 		robot.delay(1000);
-		this.sendKeys(robot, "open /Applications/ROTMG/RotMG.app");
+		Shortcuts.sendKeys(robot, "open /Applications/ROTMG/RotMG.app");
 		robot.keyPress(KeyEvent.VK_ENTER);
 		robot.keyRelease(KeyEvent.VK_ENTER);
-		Shortcuts.quitTerminal(robot);
+		Shortcuts.quitProgram(robot);
 		robot.mouseMove(884, 671);
 		robot.delay(20000);
 		Shortcuts.leftClick(robot);
 		Shortcuts.leftClick(robot);
 		robot.delay(5000);
+	}
+	
+	public void setMapCoordinates() {
+		rect = new Rectangle(1087, 123, 191, 191);
 	}
 	
 	public void getIntoRealm() {
@@ -92,12 +75,23 @@ public class Program {
 			DataBuffer db=r.getDataBuffer();
 			DataBufferInt dbi=(DataBufferInt)db;
 			int[] data = dbi.getData();            		
-
 			for (int x_scale = 0; x_scale < rect.width; x_scale += 10) {
 				for(int y_scale = 0; y_scale < rect.height; y_scale += 10) {
 					int rgb = data[x_scale + rect.width * y_scale];
 					if (rgb == -15260171) {
-						robot.mouseMove(rect.x + x_scale, rect.y + y_scale);
+						if(rect.x + x_scale < 97) {
+							robot.keyPress(KeyEvent.VK_A);
+							robot.delay(1000);
+							robot.keyRelease(KeyEvent.VK_A);
+							x_scale = 0;
+						}
+						if(rect.x + x_scale > 97) {
+							robot.keyPress(KeyEvent.VK_D);
+							robot.delay(1000);
+							robot.keyRelease(KeyEvent.VK_D);
+							x_scale = 0;
+						}
+						
 					}
 				}
 			}
